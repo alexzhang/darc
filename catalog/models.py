@@ -14,6 +14,7 @@ class Term(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=1000, blank=True, null=True)
     slug = models.CharField(max_length=200)
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
         ordering = ['name']
@@ -22,9 +23,9 @@ class Term(models.Model):
         return f"[Term {self.name}]"
 
 
-class PoolGroup(models.Model):
-    created_by = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, related_name='poolgroup_created_by')
-    modified_by = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, related_name='poolgroup_modified_by')
+class Collection(models.Model):
+    created_by = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, related_name='collection_created_by')
+    modified_by = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, related_name='collection_modified_by')
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1)
@@ -32,42 +33,10 @@ class PoolGroup(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=1000, blank=True, null=True)
     slug = models.CharField(max_length=200)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self) -> str:
-        return f"[PoolGroup {self.name}]"
-
-
-class Pool(models.Model):
-    created_by = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, related_name='pool_created_by')
-    modified_by = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, related_name='pool_modified_by')
-    created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1)
-
-    name = models.CharField(max_length=200)
-    description = models.TextField(max_length=1000, blank=True, null=True)
-    slug = models.CharField(max_length=200)
-
-    groups = models.ManyToManyField(PoolGroup, blank=True)
-    related = models.ManyToManyField('self', blank=True)
-
-    def __str__(self) -> str:
-        return f"[Pool {self.name}]"
-
-
-class Catalog(models.Model):
-    created_by = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, related_name='catalog_created_by')
-    modified_by = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1, related_name='catalog_modified_by')
-    created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1)
-
-    name = models.CharField(max_length=200)
-    description = models.TextField(max_length=1000, blank=True, null=True)
-    slug = models.CharField(max_length=200)
-
-    def __str__(self) -> str:
-        return f"[Catalog {self.name}]"
+        return f"[Collection {self.name}]"
 
 
 class Document(models.Model):
@@ -80,9 +49,8 @@ class Document(models.Model):
     title = models.CharField(max_length=200)
     slug = models.CharField(max_length=200)
 
-    pools = models.ManyToManyField(Pool, blank=True)
+    collections = models.ManyToManyField(Collection)
     terms = models.ManyToManyField(Term, blank=True)
-    catalog = models.ForeignKey(Catalog, on_delete=models.PROTECT)
     related = models.ManyToManyField('self', blank=True)
 
 
