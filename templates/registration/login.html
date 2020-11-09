@@ -73,7 +73,11 @@
     </style>
   </head>
   <body class="text-center">
-    <form class="form-signin" method="post" action="{% url 'login' %}">
+    {% if next %}
+      <form class="form-signin" method="post" action="{% url 'login' %}?next={{next}}">
+    {%else%}
+      <form class="form-signin" method="post" action="{% url 'login' %}">
+    {% endif %}
       <svg version="1.0" class="mb-4" width="216" height="72" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 1296 432" enable-background="new 0 0 1296 432" xml:space="preserve" x="0px" y="0px">
         <g>
