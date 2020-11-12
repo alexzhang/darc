@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
 
-from catalog.views import collection_detail, collection_root, datafile_detail, document_detail, documentxmpmeta_detail, term_detail, document_list
+from catalog.views import search_results, collection_detail, collection_root, datafile_detail, document_detail, documentxmpmeta_detail, term_detail, document_list
 
 
 urlpatterns = [
@@ -11,9 +11,10 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
+    path('search/', search_results, name='search'),
+
     path('c/', collection_root),
     path('collections/', collection_root),
-
     path('c/<int:pk>', collection_detail),
     path('collection/<int:pk>', collection_detail),
     path('c/<slug:slug>', collection_detail),
@@ -26,6 +27,8 @@ urlpatterns = [
     path('documents/', document_list),
     path('d/<int:pk>', document_detail),
     path('document/<int:pk>', document_detail),
+    path('d/<slug:slug>', document_detail),
+    path('document/<slug:slug>', document_detail),
 
     path('x/<int:pk>', documentxmpmeta_detail),
     path('xmp/<int:pk>', documentxmpmeta_detail),
@@ -35,3 +38,6 @@ urlpatterns = [
     path('t/<slug:slug>', term_detail),
     path('term/<slug:slug>', term_detail),
 ]
+
+# /users/
+# /u/<slug:slug>
